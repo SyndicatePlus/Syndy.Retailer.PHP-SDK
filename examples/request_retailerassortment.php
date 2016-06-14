@@ -12,6 +12,8 @@ require_once "../src/syndyretailerapimanager.class.php";
 $credentials = new Syndy\Api\Auth\SyndyApiCredentials(APIKEY, APISECRET);
 $api = new Syndy\Api\SyndyRetailerApiManager($credentials);
 
+// Create a request that fetches only that part of the assortment in which
+// changes have been made since yesterday.
 $request = $api->createRetailerAssortmentRequest(time() - 86400);
 $response = $request->execute();
 var_dump($response);

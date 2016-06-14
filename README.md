@@ -18,7 +18,13 @@ For API Access it is imperative you own a Syndy Retailer account. If you do not 
 Usage of the Syndy Retailer API is best illustrated by taking a look at the included [examples][3]. To get started quickly, however, all you need to make a successful call to the Syndy Retailer API is the following snippet of code:
 
 ```
+$credentials = new Syndy\Api\Auth\SyndyApiCredentials(APIKEY, APISECRET);
+$api = new Syndy\Api\SyndyRetailerApiManager($credentials);
 
+// Create a request that fetches only that part of the assortment in which
+// changes have been made since yesterday.
+$request = $api->createRetailerAssortmentRequest(time() - 86400);
+$response = $request->execute();
 ```
 
 [3]: https://github.com/SyndicatePlus/Syndy.Retailer.PHP-SDK/tree/master/examples
