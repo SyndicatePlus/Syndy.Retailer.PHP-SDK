@@ -172,7 +172,7 @@ class SyndyApiConnection
 		return $this->buildApiEndpointUrl() 
 			. "/"
 			. trim($resource, "/") 
-			. ($queryString == null || strlen($queryString) == 0 ? "" : "?".trim($queryString, "?"));
+			. ($queryString == null || strlen($queryString."") == 0 ? "" : "?".trim($queryString, "?"));
 	}
 
 	/**

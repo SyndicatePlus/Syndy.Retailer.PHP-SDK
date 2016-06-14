@@ -59,13 +59,14 @@ class QueryString implements \Iterator, \ArrayAccess
 	
 	public function set($key, $value) {
 		$this->data[$key] = $value;
+		$this->valid = true;
 	}
 	
 	public function __toString() {
 		if ( !$this->valid ) return "";
 		
 		$output = "";
-		foreach ( $this->data as $key => $value ) $output .= $key ."=". $value ."&";
+		foreach ( $this->data as $key => $value ) $output .= $key ."=". urlencode($value) ."&";
 		return substr($output, 0, strlen($output) - 1);
 	}
 	

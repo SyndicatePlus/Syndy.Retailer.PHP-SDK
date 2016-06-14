@@ -21,6 +21,8 @@
 
 namespace Syndy\Api\Requests;
 
+require_once dirname(__FILE__)."/syndybaserequest.class.php";
+
 use Syndy\Api\Net;
 use Syndy\Api\Exceptions;
 use Syndy\Api\Utility;
@@ -33,8 +35,10 @@ class RetailerAssortmentRequest extends SyndyBaseRequest {
 
 	private $fromDate = null;
 
-	public function __construct(Net\SyndyApiConnection &$connection) {
+	public function __construct(Net\SyndyApiConnection &$connection, $fromDate) {
 		parent::__construct($connection);
+
+		$this->setFromDate($fromDate);
 	}
 
 	public function setOffset($offset) {
@@ -53,6 +57,20 @@ class RetailerAssortmentRequest extends SyndyBaseRequest {
 		$this->amount = $amount;
 	}
 
+	public function setFromDate($fromDate) {
+		if (is_int($fromDate)) {
+			$this->fromDate = gmdate("Y-m-d\TH:i:s.00\Z", $fromDate);
+			var_dump($this->fromDate);
+			return;
+		}
+
+		$time = strtotime($fromDate);
+		if ($time === false) {
+			throw new Exceptions\SyndyApiException("Invalid from date. Must be parsable by strtotime!");
+		}
+		$this->fromDate = gmdate("Y-m-d\TH:i:s.00\Z", $time);
+	}
+
 	public function getOffset() {
 		return $this->offset;
 	}
@@ -63,17 +81,22 @@ class RetailerAssortmentRequest extends SyndyBaseRequest {
 
 	public function execute() {
 		$response = $this->connection->sendRequest("GET", "retailer/assortment", $this->getQueryString());
+		return $response;
 	}
 
 	private function getQueryString() {
 		$queryString = new Utility\QueryString();
 
-		if ($this->offset != null) {
+		if ($this->offset !== null) {
 			$queryString->set("\$skip", $this->offset);
 		}
 
-		if ($this->amount != null) {
+		if ($this->amount !== null) {
 			$queryString->set("\$top", $this->amount);
+		}
+
+		if ($this->fromDate !== null) {
+			$queryString->set("\$filter", "DateLastUpdate gt DateTime'" . $this->fromDate ."'");
 		}
 
 		return $queryString;
