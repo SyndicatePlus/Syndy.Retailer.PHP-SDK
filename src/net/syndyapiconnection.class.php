@@ -39,6 +39,8 @@ use Syndy\Api\Contracts;
  */
 class SyndyApiConnection
 {
+	private $cultureId = null;
+
 	private $credentials = null;
 
 	private $apiEndpoint = "https://api.syndy.com";
@@ -53,6 +55,18 @@ class SyndyApiConnection
 
 	public function getCredentials() {
 		return $this->credentials;
+	}
+
+	public function setCultureId($cultureId) {
+		if (!is_string($cultureId)) {
+			throw new Exceptions\SyndyApiException("Culture Id must be provided as a string");
+		}
+
+		$this->cultureId = $cultureId;
+	}
+
+	public function getCultureId() {
+		return $this->cultureId;
 	}
 
 	/**
@@ -83,7 +97,8 @@ class SyndyApiConnection
 			"http" => array(
 				"method" => $method,
 				"header" => "Authorization: ". $this->credentials->getToken() ."\r\n".
-							"Content-Type: application/x-www-form-urlencoded\r\n"
+							"Content-Type: application/x-www-form-urlencoded\r\n".
+							($this->cultureId != null ? "Accept-Language: ". $this->cultureId ."\r\n" : "")
 			)
 		)));
 

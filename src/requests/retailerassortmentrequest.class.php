@@ -1,0 +1,82 @@
+<?php
+// Copyright (c) 2016 Syndicate Plus B.V.
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+namespace Syndy\Api\Requests;
+
+use Syndy\Api\Net;
+use Syndy\Api\Exceptions;
+use Syndy\Api\Utility;
+
+class RetailerAssortmentRequest extends SyndyBaseRequest {
+
+	private $offset = null;
+
+	private $amount = null;
+
+	private $fromDate = null;
+
+	public function __construct(Net\SyndyApiConnection &$connection) {
+		parent::__construct($connection);
+	}
+
+	public function setOffset($offset) {
+		if (!is_int($offset) || $offset < 0) {
+			throw new Exceptions\SyndyApiException("Offset must be an integer greater than or equal to 0");
+		}
+
+		$this->offset = $offset;
+	}
+
+	public function setAmount($amount) {
+		if (!is_int($amount) || $amount < 1) {
+			throw new Exceptions\SyndyApiException("Amount must be an integer greater than 0");
+		}
+
+		$this->amount = $amount;
+	}
+
+	public function getOffset() {
+		return $this->offset;
+	}
+
+	public function getAmount() {
+		return $this->offset;
+	}
+
+	public function execute() {
+		$response = $this->connection->sendRequest("GET", "retailer/assortment", $this->getQueryString());
+	}
+
+	private function getQueryString() {
+		$queryString = new Utility\QueryString();
+
+		if ($this->offset != null) {
+			$queryString->set("\$skip", $this->offset);
+		}
+
+		if ($this->amount != null) {
+			$queryString->set("\$top", $this->amount);
+		}
+
+		return $queryString;
+	}
+}
+?>

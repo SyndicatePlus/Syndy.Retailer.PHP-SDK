@@ -13,3 +13,12 @@ Please note that the Syndy Retailer API is only suitable for retailers and websh
 For API Access it is imperative you own a Syndy Retailer account. If you do not yet have such an account, you can sign-up for [The Syndy Platform][2], making sure you select "Retailer" when asked for your account type. As soon as you have an account, you can contact our customer support team for instructions on receiving API credentials.
 
 [2]: https://my.syndy.com/signup
+
+#### Usage
+Usage of the Syndy Retailer API is best illustrated by taking a look at the included [examples][3]. To get started quickly, however, all you need to make a successful call to the Syndy Retailer API is the following snippet of code:
+
+```
+
+```
+
+[3]: https://github.com/SyndicatePlus/Syndy.Retailer.PHP-SDK/tree/master/examples
