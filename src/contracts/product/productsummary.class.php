@@ -19,31 +19,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace Syndy\Api\Contracts;
+namespace Syndy\Api\Contracts\Product;
 
-require_once dirname(__FILE__)."/basecontract.class.php";
+require_once dirname(__FILE__)."/../basecontract.class.php";
+require_once dirname(__FILE__)."/../brand/brandsummary.class.php";
 
+use Syndy\Api\Contracts;
 
-/**
- * Given a ResponseObject parsed from JSON returned by the Syndy API, this 
- * class constructs and represents an AuthenticationResponse.
- */
-class AuthenticationResponse extends BaseContract {
-	public $token;
+class ProductSummary extends Contracts\BaseContract {
 
-	public $dateExpires;
+	private $name;
 
-	public $applicationId;
+	private $shortDescription;
 
-	public function __construct($responseObject) {
-		if (!is_object($responseObject)) {
-			throw new \ArgumentException("Response object parameter must be an object!");
-		}
+	private $brandSummary;
 
-		$this->token = $responseObject->Token;
-		$this->dateExpires = $responseObject->DateExpires;
-		$this->applicationId = $responseObject->ApplicationId;
+	private $image;
+
+	public function __construct($rawData) {
+		$this->parse($rawData);
+	}
+
+	protected function parse($rawData) {
+		$rawData = parent::parse($rawData);
+
+		$this->name = $rawData->Name;
+		$this->shortDescription = $rawData->Description;
+		$this->brandSummary = new Contracts\Brand\BrandSummary($rawData->Brand);
+	}
+
+	public function getName() {
+		return $this->name;
+	}
+
+	public function getShortDescription() {
+		return $this->shortDescription;
+	}
+
+	public function getBrand() {
+		return $this->brandSummary;
 	}
 }
-
 ?>

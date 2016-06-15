@@ -32,5 +32,13 @@ abstract class SyndyBaseRequest {
 	}
 
 	public abstract function execute();
+
+	public function setCultureId($cultureId) {
+		$this->connection->setCultureId($cultureId);
+	}
+
+	public function getConnection() {
+		return $this->connection;
+	}
 }
 ?>

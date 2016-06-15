@@ -23,6 +23,7 @@ namespace Syndy\Api;
 
 require_once dirname(__FILE__)."/net/syndyapiconnection.class.php";
 require_once dirname(__FILE__)."/requests/retailerassortmentrequest.class.php";
+require_once dirname(__FILE__)."/requests/getproductrequest.class.php";
 
 use Syndy\Api\Auth;
 use Syndy\Api\Net;
@@ -30,17 +31,50 @@ use Syndy\Api\Requests;
 
 class SyndyRetailerApiManager
 {
-	private $connection;
+	private $credentials;
 
 	public function __construct(Auth\SyndyApiCredentials &$credentials) {
-		$this->connection = new Net\SyndyApiConnection($credentials);
+		$this->credentials = $credentials;
 	}
 
+	/**
+	 * Creates a new Retailer Assortment request with its own underlying connection object. The
+	 * request is returned in un-executed state so the consumer still has the chance to parameterize
+	 * the request before executing it.
+	 *
+	 * @param $fromDate 		The date by which to filter the resultset (include only products with DateLastUpdate >= fromDate)
+	 * @param $offset 			Pagination offset
+	 * @param $limit 			Pagination limit (num items to include)
+	 * @return RetailerAssortmentRequest
+	 */
 	public function createRetailerAssortmentRequest($fromDate = null, $offset = 0, $limit = 50) {
-		$request = new Requests\RetailerAssortmentRequest($this->connection, $fromDate);
+		$connection = $this->createConnection();
+
+		$request = new Requests\RetailerAssortmentRequest($connection, $fromDate);
 		$request->setOffset($offset);
 		$request->setAmount($limit);
 		return $request;
+	}
+
+	/**
+	 * Creates a new Get Product request with its own underlyig connection object. The
+	 * request is returned in un-executed state so the consumer still has t ehc hance to
+	 * parameterize the request before executing it.
+	 *
+	 * @param $productId		The ProductId for which the lookup should take place
+	 * @param $cultureId		The culture id in the context of which the product content should be requested
+	 * @return GetProductRequest
+	 */
+	public function createGetProductRequest($productId, $cultureId) {
+		$connection = $this->createConnection();
+		$connection->setCultureId($cultureId);
+
+		$request = new Requests\GetProductRequest($connection, $productId);
+		return $request;
+	}
+
+	private function createConnection() {
+		return new Net\SyndyApiConnection($this->credentials);
 	}
 }
 ?>

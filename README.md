@@ -37,3 +37,36 @@ var_dump($response);
 ```
 
 [3]: https://github.com/SyndicatePlus/Syndy.Retailer.PHP-SDK/tree/master/examples
+
+#### Preferred Mode of Operation
+The preferred mode of operation for retailers or webshops who choose to use the Syndy Retailer API to get access to the latest product content within their assortment, is to request changed products on a periodic basis and then request the details for each changed product separately. A simplified version of a typical "refresh-product-data.php" cron job might then look as follows:
+
+```php
+define('PUBLICKEY', 'Your public key here');
+define('PRIVATEKEY', 'Your private key here');
+define('CULTUREID', 'The 2-letter language id in which i want to receive content');
+
+// Include the Api Manager file
+require "Syndy.Api.PHP-SDK/src/syndyretailerapimanager.class.php";
+
+// Create credentials container object and construct ApiManager
+$credentials = new Syndy\Api\Auth\SyndyApiCredentials(PUBLICKEY, PRIVATEKEY);
+$api = new Syndy\Api\SyndyRetailerApiManager($credentials);
+
+// Request changes made to my assortment since 1 hour ago
+$request = $api->createRetailerAssortmentRequest(time() - 3600);
+$assortmentProducts = $request->execute();
+
+// Walk through the products returned by the API and fetch the details of each
+// individual product.
+// NOTE: This is a simplified example. The returned assortment is paged, and if
+// more than 50 products are returned, the request needs to be re-executed with
+// different pagination settings.
+foreach ($assortmentProducts as $product) {
+	// Create product request and execute.
+	$productRequest = $api->getProductRequest($product->getId(), CULTUREID);
+	$productDetails = $productRequest->execute();
+
+	// TODO: Do something with the $productDetails object, e.g. store in database
+}
+```

@@ -27,6 +27,10 @@ use Syndy\Api\Net;
 use Syndy\Api\Exceptions;
 use Syndy\Api\Utility;
 
+/**
+ * The RetailerAssortmentRequest request wraps around the /retailer/assortment API
+ * resource and allows for easier parameterization for common use-cases.
+ */
 class RetailerAssortmentRequest extends SyndyBaseRequest {
 
 	private $offset = null;
@@ -57,10 +61,15 @@ class RetailerAssortmentRequest extends SyndyBaseRequest {
 		$this->amount = $amount;
 	}
 
+	/**
+	 * Sets the date value on which to filter the returned result set. Only products in the
+	 * assortment that have been updated after the specified date will be included.
+	 *
+	 * @param $fromDate 		The fromDate as a valid datetime-string or integer value (seconds since UNIX epoch)
+	 */
 	public function setFromDate($fromDate) {
 		if (is_int($fromDate)) {
 			$this->fromDate = gmdate("Y-m-d\TH:i:s.00\Z", $fromDate);
-			var_dump($this->fromDate);
 			return;
 		}
 
@@ -84,6 +93,10 @@ class RetailerAssortmentRequest extends SyndyBaseRequest {
 		return $response;
 	}
 
+	/**
+	 * Helps construct the query string based on the parameters of this
+	 * request.
+	 */
 	private function getQueryString() {
 		$queryString = new Utility\QueryString();
 

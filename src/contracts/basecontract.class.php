@@ -21,29 +21,24 @@
 
 namespace Syndy\Api\Contracts;
 
-require_once dirname(__FILE__)."/basecontract.class.php";
+class BaseContract {
 
+	public function __construct() {
 
-/**
- * Given a ResponseObject parsed from JSON returned by the Syndy API, this 
- * class constructs and represents an AuthenticationResponse.
- */
-class AuthenticationResponse extends BaseContract {
-	public $token;
+	}
 
-	public $dateExpires;
-
-	public $applicationId;
-
-	public function __construct($responseObject) {
-		if (!is_object($responseObject)) {
-			throw new \ArgumentException("Response object parameter must be an object!");
+	protected function parse($rawData) {
+		if (is_string($rawData)) {
+			$rawData = json_decode($rawData);
+			if ($rawData === false) {
+				throw new Exceptions\SyndyApiException("Could not parse json");
+			}
+		}
+		if (!is_object($rawData)) {
+			throw new Exceptions\SyndyApiException("Expect raw data to be an object");
 		}
 
-		$this->token = $responseObject->Token;
-		$this->dateExpires = $responseObject->DateExpires;
-		$this->applicationId = $responseObject->ApplicationId;
+		return $rawData;
 	}
 }
-
 ?>
