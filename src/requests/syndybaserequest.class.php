@@ -31,7 +31,7 @@ abstract class SyndyBaseRequest {
 		$this->connection = $connection;
 	}
 
-	public abstract function execute();
+	public abstract function execute($raw = false);
 
 	public function setCultureId($cultureId) {
 		$this->connection->setCultureId($cultureId);

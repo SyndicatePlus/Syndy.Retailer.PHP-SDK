@@ -49,13 +49,13 @@ class GetProductRequest extends SyndyBaseRequest {
 		$this->productId = $productId;
 	}
 
-	public function execute() {
+	public function execute($raw = false) {
 		if ($this->productId === null) {
 			throw new Exceptions\SyndyApiException("Invalid product identifier specified!");
 		}
 
 		$response = $this->connection->sendRequest("GET", "product/".$this->productId);
-		return new Contracts\Product\Product($response);
+		return $raw ? $response : new Contracts\Product\Product($response);
 	}
 
 	private function validateId($productId) {

@@ -90,9 +90,9 @@ class RetailerAssortmentRequest extends SyndyBaseRequest {
 		return $this->offset;
 	}
 
-	public function execute() {
+	public function execute($raw = false) {
 		$response = $this->connection->sendRequest("GET", "retailer/assortment", $this->getQueryString());
-		return new Contracts\Retailer\RetailerAssortment($response);
+		return $raw ? $response : new Contracts\Retailer\RetailerAssortment($response);
 	}
 
 	/**
