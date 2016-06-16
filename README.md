@@ -70,3 +70,6 @@ foreach ($assortmentProducts as $product) {
 	// TODO: Do something with the $productDetails object, e.g. store in database
 }
 ```
+
+#### Contracts
+The SDK, where possible, attempts to parse the raw JSON into Contract classes so that additional utility becomes available to the consumer of the API. However, it is possible to override this behaviour by passing `true` as an argument to a request's execute() method.
