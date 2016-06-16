@@ -19,30 +19,62 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace Syndy\Api\Contracts;
+namespace Syndy\Api\Contracts\Retailer;
 
-require_once dirname(__FILE__)."/../exceptions/syndyapiexception.class.php";
+require_once dirname(__FILE__)."/../basecontract.class.php";
 
-use Syndy\Api\Exceptions;
+use Syndy\Api\Contracts;
 
-class BaseContract {
+class RetailerProductReference extends Contracts\BaseContract {
 
-	public function __construct() {
+	private $id;
 
+	private $dateLastUpdate;
+
+	private $barcode;
+
+	private $articleNumber;
+
+	public function __construct($rawData) {
+		$this->parse($rawData);
 	}
 
 	protected function parse($rawData) {
-		if (is_string($rawData)) {
-			$rawData = json_decode($rawData);
-			if ($rawData === false) {
-				throw new Exceptions\SyndyApiException("Could not parse json");
-			}
-		}
-		if (!is_object($rawData)) {
-			throw new Exceptions\SyndyApiException("Expect raw data to be an object");
+		$rawData = parent::parse($rawData);
+
+		$this->id = $rawData->Id;
+		$this->dateLastUpdate = $rawData->DateLastUpdate;
+		$this->barcode = $rawData->Barcode;
+		$this->articleNumber = $rawData->ArticleNumber;
+	}
+
+	public function getId() {
+		return $this->id;
+	}
+
+	public function getDateLastUpdate() {
+		return $this->dateLastUpdate;
+	}
+
+	public function getBarcode() {
+		return $this->barcode->Value;
+	}
+
+	public function getArticleNumber() {
+		return $this->articleNumber;
+	}
+
+	public function __get($field) {
+		if ($field == "barcode") {
+			return $this->barcode->Value;
 		}
 
-		return $rawData;
+		if (!isset($this->$field)) {
+			return null;
+		}
+
+		return $this->$field;
 	}
 }
+
 ?>

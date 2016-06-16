@@ -22,10 +22,12 @@
 namespace Syndy\Api\Requests;
 
 require_once dirname(__FILE__)."/syndybaserequest.class.php";
+require_once dirname(__FILE__)."/../contracts/retailer/retailerassortment.class.php";
 
 use Syndy\Api\Net;
 use Syndy\Api\Exceptions;
 use Syndy\Api\Utility;
+use Syndy\Api\Contracts;
 
 /**
  * The RetailerAssortmentRequest request wraps around the /retailer/assortment API
@@ -90,7 +92,7 @@ class RetailerAssortmentRequest extends SyndyBaseRequest {
 
 	public function execute() {
 		$response = $this->connection->sendRequest("GET", "retailer/assortment", $this->getQueryString());
-		return $response;
+		return new Contracts\Retailer\RetailerAssortment($response);
 	}
 
 	/**
