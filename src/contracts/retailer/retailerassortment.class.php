@@ -87,7 +87,7 @@ class RetailerAssortment extends Contracts\BaseContract implements \Iterator {
 	}
 
 	public function valid() {
-		return true;
+		return $this->current() !== false;
 	}
 }
 
