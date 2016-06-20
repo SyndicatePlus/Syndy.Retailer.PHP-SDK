@@ -44,5 +44,13 @@ class BaseContract {
 
 		return $rawData;
 	}
+
+	public function __get($field) {
+		if (!isset($this->$field)) {
+			return null;
+		}
+
+		return $this->$field;
+	}
 }
 ?>

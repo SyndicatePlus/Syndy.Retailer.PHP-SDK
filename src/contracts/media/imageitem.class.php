@@ -19,66 +19,37 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace Syndy\Api\Contracts\Product;
+namespace Syndy\Api\Contracts\Media;
 
-require_once dirname(__FILE__)."/../basecontract.class.php";
-require_once dirname(__FILE__)."/../../exceptions/syndyapiexception.class.php";
-require_once dirname(__FILE__)."/productsummary.class.php";
-require_once dirname(__FILE__)."/../template/producttemplate.class.php";
+require_once dirname(__FILE__)."/mediaitembase.class.php";
 
-use Syndy\Api\Exceptions;
-use Syndy\Api\Contracts;
+class ImageItem extends MediaItemBase {
 
-class Product extends Contracts\BaseContract {
+	private $properties;
 
-	private $dateLastUpdate;
-
-	private $barcode;
-
-	private $summary;
-
-	private $data;
-
-	private $id;
+	private $ownershipType;
 
 	public function __construct($rawData) {
-		$this->parse($rawData);
+		parent::__construct($rawData);
 	}
 
 	protected function parse($rawData) {
 		$rawData = parent::parse($rawData);
 
-		$this->id = $rawData->Id;
-		$this->barcode = $rawData->Barcode;
-		$this->dateLastUpdate = $rawData->DateLastUpdate;
-		$this->summary = new ProductSummary($rawData->Summary);
-		$this->data = new Contracts\Template\ProductTemplate($rawData->Template);
+		$this->properties = new \stdClass();
+		$this->properties->width = $rawData->Properties->Width;
+		$this->properties->height = $rawData->Properties->Height;
+		$this->ownershipType = $rawData->OwnershipType;
 
 		return $rawData;
 	}
 
-	public function getId() {
-		return $this->id;
+	public function getProperties() {
+		return $this->properties;
 	}
 
-	public function getBarcode() {
-		return $this->barcode->Value;
-	}
-
-	public function getName() {
-		return $this->summary->getName();
-	}
-
-	public function getShortDescription() {
-		return $this->summary->getShortDescription();
-	}
-
-	public function getBrand() {
-		return $this->summary->getBrand();
-	}
-
-	public function getDateLastUpdate() {
-		return $this->dateLastUpdate;
+	public function getOwnershipType() {
+		return $this->ownershipType;
 	}
 }
 ?>

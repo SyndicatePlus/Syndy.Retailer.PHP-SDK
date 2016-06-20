@@ -67,5 +67,9 @@ class SyndyApiCredentials
 	public function hasToken() {
 		return $this->token !== null;
 	}
+
+	public function expireToken() {
+		$this->token = null;
+	}
 }
 ?>

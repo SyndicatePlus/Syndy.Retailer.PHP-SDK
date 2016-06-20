@@ -19,27 +19,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace Syndy\Api\Contracts\Product;
+namespace Syndy\Api\Contracts\Media;
 
 require_once dirname(__FILE__)."/../basecontract.class.php";
-require_once dirname(__FILE__)."/../../exceptions/syndyapiexception.class.php";
-require_once dirname(__FILE__)."/productsummary.class.php";
-require_once dirname(__FILE__)."/../template/producttemplate.class.php";
 
-use Syndy\Api\Exceptions;
 use Syndy\Api\Contracts;
 
-class Product extends Contracts\BaseContract {
-
-	private $dateLastUpdate;
-
-	private $barcode;
-
-	private $summary;
-
-	private $data;
+abstract class MediaItemBase extends Contracts\BaseContract {
 
 	private $id;
+
+	private $url;
 
 	public function __construct($rawData) {
 		$this->parse($rawData);
@@ -49,10 +39,7 @@ class Product extends Contracts\BaseContract {
 		$rawData = parent::parse($rawData);
 
 		$this->id = $rawData->Id;
-		$this->barcode = $rawData->Barcode;
-		$this->dateLastUpdate = $rawData->DateLastUpdate;
-		$this->summary = new ProductSummary($rawData->Summary);
-		$this->data = new Contracts\Template\ProductTemplate($rawData->Template);
+		$this->url = $rawData->Url;
 
 		return $rawData;
 	}
@@ -61,24 +48,8 @@ class Product extends Contracts\BaseContract {
 		return $this->id;
 	}
 
-	public function getBarcode() {
-		return $this->barcode->Value;
-	}
-
-	public function getName() {
-		return $this->summary->getName();
-	}
-
-	public function getShortDescription() {
-		return $this->summary->getShortDescription();
-	}
-
-	public function getBrand() {
-		return $this->summary->getBrand();
-	}
-
-	public function getDateLastUpdate() {
-		return $this->dateLastUpdate;
+	public function getUrl() {
+		return $this->url;
 	}
 }
 ?>

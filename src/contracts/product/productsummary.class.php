@@ -23,6 +23,7 @@ namespace Syndy\Api\Contracts\Product;
 
 require_once dirname(__FILE__)."/../basecontract.class.php";
 require_once dirname(__FILE__)."/../brand/brandsummary.class.php";
+require_once dirname(__FILE__)."/../media/imageitem.class.php";
 
 use Syndy\Api\Contracts;
 
@@ -46,6 +47,7 @@ class ProductSummary extends Contracts\BaseContract {
 		$this->name = $rawData->Name;
 		$this->shortDescription = $rawData->Description;
 		$this->brandSummary = new Contracts\Brand\BrandSummary($rawData->Brand);
+		$this->image = $rawData->Image != null ? new Contracts\Media\ImageItem($rawData->Image) : null;
 	}
 
 	public function getName() {
@@ -58,6 +60,10 @@ class ProductSummary extends Contracts\BaseContract {
 
 	public function getBrand() {
 		return $this->brandSummary;
+	}
+
+	public function getImage() {
+		return $this->image;
 	}
 }
 ?>

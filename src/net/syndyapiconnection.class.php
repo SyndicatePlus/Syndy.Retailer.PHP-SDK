@@ -77,9 +77,14 @@ class SyndyApiConnection
 	 * @param $method 			The HTTP method (e.g. GET/POST/PUT/DELETE)
 	 * @param $resource 		The resource to request, e.g. "product/{id}"
 	 * @param $queryString 		The queryString. Mixed. Can be of type QueryString or a plain string
+	 * @param $retryCnt 		How many times to retry the request in case of authentication failures
 	 * @return stdClass 		Returns the json_decode'd response
 	 */
-	public function sendRequest($method, $resource, $queryString = "") {
+	public function sendRequest($method, $resource, $queryString = "", $retryCnt = 0) {
+		if ($retryCnt > 2) {
+			throw new Exceptions\AuthorizationException("2 retries with authentication did not succeed. Request cannot be executed!");
+		}
+
 		// Test validity of the $method parameter
 		$method = strtoupper($method);
 		if (!in_array($method, array("GET", "POST", "DELETE"))) {
@@ -101,6 +106,18 @@ class SyndyApiConnection
 							($this->cultureId != null ? "Accept-Language: ". $this->cultureId ."\r\n" : "")
 			)
 		)));
+
+		// Parse headers to gain access to response code & rate limit info
+		$headers = parseHeaders($http_response_header);
+
+		// If 401 response is returned, expire the token and retry the request so
+		// authentication is forced to happen again.
+		if ($headers["response_code"] == 401) {
+			$this->credentials->expireToken();
+			return $this->sendRequest($method, $resource, $queryString, ++$retryCnt);
+		}
+
+		// TODO: Send rate limit info to credentials object for tracking
 
 		if ( $response === false )
 			return $response;
