@@ -68,6 +68,10 @@ foreach ($assortmentProducts as $product) {
 	$productDetails = $productRequest->execute();
 
 	// TODO: Do something with the $productDetails object, e.g. store in database
+	echo $productDetails->id;
+	echo $productDetails->name;
+	echo $productDetails->{'USPs / Claims'}; // Use __get magic to find a named field from connected template
+	var_dump($productDetails->findField('USPs / Claims'));
 }
 ```
 
