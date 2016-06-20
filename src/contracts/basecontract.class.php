@@ -27,8 +27,10 @@ use Syndy\Api\Exceptions;
 
 class BaseContract {
 
-	public function __construct() {
-
+	public function __construct($rawData = null) {
+		if ($rawData !== null) {
+			$this->parse($rawData);
+		}		
 	}
 
 	protected function parse($rawData) {

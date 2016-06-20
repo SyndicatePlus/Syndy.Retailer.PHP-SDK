@@ -26,4 +26,17 @@ echo "<br />Brand Name: " . $response->getBrand()->getName();
 echo "<br />Manufacturer Name: ". $response->getBrand()->getManufacturer()->getName();
 echo "<br />Short Description: ". $response->getShortDescription();
 
+foreach ($response->getData()->getFields() as $field) {
+	if ($field->isArray()) {
+		echo "<br />" . $field->key .":";
+
+		foreach ($field->value as $arrayEntry) {
+			echo "<br />- " . $arrayEntry->value;
+		}
+	}
+	else {
+		echo "<br />" . $field->getKey() .": ". $field->value;
+	}	
+}
+
 ?>

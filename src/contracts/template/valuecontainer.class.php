@@ -22,63 +22,55 @@
 namespace Syndy\Api\Contracts\Template;
 
 require_once dirname(__FILE__)."/../basecontract.class.php";
-require_once dirname(__FILE__)."/producttemplatefield.class.php";
+require_once dirname(__FILE__)."/valuecontainers/flatvaluecontainer.class.php";
+require_once dirname(__FILE__)."/valuecontainers/arrayvaluecontainer.class.php";
 
 use Syndy\Api\Contracts;
 
-class ProductTemplate extends Contracts\BaseContract {
+class ValueContainer extends Contracts\BaseContract {
 
-	protected $id;
+	private $value;
 
-	protected $name;
+	private $type;
 
-	protected $children = array();
+	public function __construct($rawData, $type) {
+		$this->type = $type;
 
-	protected $fields = array();
-
-	public function __construct($rawData) {
 		parent::__construct($rawData);
 	}
 
 	protected function parse($rawData) {
 		$rawData = parent::parse($rawData);
 
-		$this->id = $rawData->Id;
-		$this->name = $rawData->Name;
+		if ($rawData->Value === null)
+			$this->value = null;
 
-		foreach ($rawData->Children as $child) {
-			$this->children[] = new ProductTemplate($child);
+		if ($this->type == "array") {
+			$this->value = new ArrayValueContainer($rawData);
 		}
-
-		foreach ($rawData->Fields as $field) {
-			$this->fields[] = new ProductTemplateField($field);
+		elseif ($this->type == "object") {
+			$this->value = ValueContainer::createObject($rawData);
 		}
+		elseif ($this->type == "enum") {
+			$this->value = ValueContainer::createEnum($rawData);
+		}
+		else {
+			$this->value = new FlatValueContainer($rawData);
+		}		
 
 		return $rawData;
 	}
 
-	public function getId() {
-		return $this->id;		
+	public function hasValue() {
+		return $this->value !== null;
 	}
 
-	public function getName() {
-		return $this->name;
-	}
-
-	public function getChildren() {
-		return $this->children;
-	}
-
-	public function getFields($allFields = true) {
-		if ($allFields) {
-			$fields = $this->fields;
-			foreach ($this->children as $childTemplate) {
-				$fields += $childTemplate->getFields();
-			}
-			return $fields;
+	public function __get($field) {
+		if ($field == "value") {
+			return $this->value !== null ? $this->value->value : null;
 		}
-		
-		return $this->fields;
+
+		return parent::__get($field);
 	}
 }
 ?>

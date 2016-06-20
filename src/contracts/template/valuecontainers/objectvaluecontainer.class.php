@@ -21,20 +21,14 @@
 
 namespace Syndy\Api\Contracts\Template;
 
-require_once dirname(__FILE__)."/../basecontract.class.php";
-require_once dirname(__FILE__)."/producttemplatefield.class.php";
+require_once dirname(__FILE__)."/../../basecontract.class.php";
+require_once dirname(__FILE__)."/../producttemplatefield.class.php";
 
 use Syndy\Api\Contracts;
 
-class ProductTemplate extends Contracts\BaseContract {
+class ObjectValueContainer extends Contracts\BaseContract {
 
-	protected $id;
-
-	protected $name;
-
-	protected $children = array();
-
-	protected $fields = array();
+	protected $data = array();
 
 	public function __construct($rawData) {
 		parent::__construct($rawData);
@@ -43,42 +37,25 @@ class ProductTemplate extends Contracts\BaseContract {
 	protected function parse($rawData) {
 		$rawData = parent::parse($rawData);
 
-		$this->id = $rawData->Id;
-		$this->name = $rawData->Name;
-
-		foreach ($rawData->Children as $child) {
-			$this->children[] = new ProductTemplate($child);
-		}
-
-		foreach ($rawData->Fields as $field) {
-			$this->fields[] = new ProductTemplateField($field);
+		foreach ($rawData->Value as $childField) {
+			$this->data[] = new Contracts\Template\ProductTemplateField($childField);
 		}
 
 		return $rawData;
 	}
 
-	public function getId() {
-		return $this->id;		
+	public function getChildFields() {
+		return $this->data;
 	}
 
-	public function getName() {
-		return $this->name;
-	}
-
-	public function getChildren() {
-		return $this->children;
-	}
-
-	public function getFields($allFields = true) {
-		if ($allFields) {
-			$fields = $this->fields;
-			foreach ($this->children as $childTemplate) {
-				$fields += $childTemplate->getFields();
+	public function __get($field) {
+		foreach ($this->data as $childField) {
+			if ($childField->key == $field) {
+				return $childField;
 			}
-			return $fields;
 		}
 		
-		return $this->fields;
+		return parent::__get($field);
 	}
 }
 ?>

@@ -80,5 +80,9 @@ class Product extends Contracts\BaseContract {
 	public function getDateLastUpdate() {
 		return $this->dateLastUpdate;
 	}
+
+	public function getData() {
+		return $this->data;
+	}
 }
 ?>
