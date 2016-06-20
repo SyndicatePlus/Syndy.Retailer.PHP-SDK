@@ -27,13 +27,13 @@ use Syndy\Api\Contracts;
 
 class RetailerProductReference extends Contracts\BaseContract {
 
-	private $id;
+	protected $id;
 
-	private $dateLastUpdate;
+	protected $dateLastUpdate;
 
-	private $barcode;
+	protected $barcode;
 
-	private $articleNumber;
+	protected $articleNumber;
 
 	public function __construct($rawData) {
 		$this->parse($rawData);

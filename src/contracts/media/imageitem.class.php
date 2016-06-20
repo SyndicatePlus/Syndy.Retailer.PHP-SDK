@@ -25,9 +25,9 @@ require_once dirname(__FILE__)."/mediaitembase.class.php";
 
 class ImageItem extends MediaItemBase {
 
-	private $properties;
+	protected $properties;
 
-	private $ownershipType;
+	protected $ownershipType;
 
 	public function __construct($rawData) {
 		parent::__construct($rawData);

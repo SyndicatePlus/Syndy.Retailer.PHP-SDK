@@ -28,11 +28,11 @@ use Syndy\Api\Contracts;
 
 class BrandSummary extends Contracts\BaseContract {
 
-	private $id;
+	protected $id;
 
-	private $name;
+	protected $name;
 
-	private $manufacturerSummary;
+	protected $manufacturer;
 
 	public function __construct($rawData) {
 		$this->parse($rawData);
@@ -43,7 +43,7 @@ class BrandSummary extends Contracts\BaseContract {
 
 		$this->id = $rawData->Id;
 		$this->name = $rawData->Name;
-		$this->manufacturerSummary = new Contracts\Manufacturer\ManufacturerSummary($rawData->Manufacturer);
+		$this->manufacturer = new Contracts\Manufacturer\ManufacturerSummary($rawData->Manufacturer);
 	}
 
 	public function getId() {
@@ -55,7 +55,7 @@ class BrandSummary extends Contracts\BaseContract {
 	}
 
 	public function getManufacturer() {
-		return $this->manufacturerSummary;
+		return $this->manufacturer;
 	}
 }
 ?>

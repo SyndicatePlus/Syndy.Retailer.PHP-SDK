@@ -28,13 +28,13 @@ use Syndy\Api\Contracts;
 
 class RetailerAssortment extends Contracts\BaseContract implements \Iterator {
 
-	private $totalCount;
+	protected $totalCount;
 
-	private $offset;
+	protected $offset;
 
-	private $resultCount;
+	protected $resultCount;
 
-	private $results = array();
+	protected $results = array();
 
 	public function __construct($rawData) {
 		$this->parse($rawData);

@@ -31,15 +31,15 @@ use Syndy\Api\Contracts;
 
 class Product extends Contracts\BaseContract {
 
-	private $dateLastUpdate;
+	protected $dateLastUpdate;
 
-	private $barcode;
+	protected $barcode;
 
-	private $summary;
+	protected $summary;
 
-	private $data;
+	protected $template;
 
-	private $id;
+	protected $id;
 
 	public function __construct($rawData) {
 		$this->parse($rawData);
@@ -52,7 +52,7 @@ class Product extends Contracts\BaseContract {
 		$this->barcode = $rawData->Barcode;
 		$this->dateLastUpdate = $rawData->DateLastUpdate;
 		$this->summary = new ProductSummary($rawData->Summary);
-		$this->data = new Contracts\Template\ProductTemplate($rawData->Template);
+		$this->template = new Contracts\Template\ProductTemplate($rawData->Template);
 
 		return $rawData;
 	}
@@ -81,8 +81,48 @@ class Product extends Contracts\BaseContract {
 		return $this->dateLastUpdate;
 	}
 
-	public function getData() {
-		return $this->data;
+	public function getTemplate() {
+		return $this->template;
+	}
+
+	/** 
+	 * Convenience method for accessing all of the product template's fields. Including
+	 * child templates' fields.
+	 *
+	 * @return array 		Array of ProductTemplateField instances.
+	 */
+	public function getFields() {
+		return $this->template->getFields();
+	}
+
+	public function findField($name) {
+		foreach ($this->getFields() as $field) {
+			if (strtolower($field->key) == strtolower($name)) {
+				return $field;
+			}
+		}
+
+		return null;
+	}
+
+	public function __get($field) {
+		if ($field == "brand") {
+			return $this->summary->brand;
+		}
+		elseif($field == "name") {
+			return $this->summary->name;
+		}
+		elseif($field == "shortDescription") {
+			return $this->summary->shortDescription;
+		}
+		elseif($field == "image") {
+			return $this->summary->image;
+		}
+		elseif(($foundField = $this->findField($field)) !== null) {
+			return $foundField;
+		}
+
+		return parent::__get($field);
 	}
 }
 ?>

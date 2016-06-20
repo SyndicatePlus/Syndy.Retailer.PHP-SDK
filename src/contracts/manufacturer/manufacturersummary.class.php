@@ -27,9 +27,9 @@ use Syndy\Api\Contracts;
 
 class ManufacturerSummary extends Contracts\BaseContract {
 
-	private $id;
+	protected $id;
 
-	private $name;
+	protected $name;
 
 	public function __construct($rawData) {
 		$this->parse($rawData);

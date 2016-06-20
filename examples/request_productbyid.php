@@ -17,26 +17,31 @@ $api = new Syndy\Api\SyndyRetailerApiManager($credentials);
 // Create a request that fetches only that part of the assortment in which
 // changes have been made since yesterday.
 $request = $api->createGetProductRequest(PRODUCT_ID, CULTUREID);
-$response = $request->execute();
-var_dump($response);
+$product = $request->execute();
 
 // Convenience methods to access data:
-echo "Product Name: " . $response->getName();
-echo "<br />Brand Name: " . $response->getBrand()->getName();
-echo "<br />Manufacturer Name: ". $response->getBrand()->getManufacturer()->getName();
-echo "<br />Short Description: ". $response->getShortDescription();
+echo "<br /><strong>Product Name:</strong> " . $product->getName(); // Or: $product->name
+echo "<br /><strong>Brand Name:</strong> " . $product->getBrand()->getName(); // Or: $product->brand->name
+echo "<br /><strong>Manufacturer Name:</strong> ". $product->brand->manufacturer->name; // Or: $product->getBrand()->getManufacturer()->getName()
+echo "<br /><strong>Short Description:</strong> ". $product->getShortDescription(); // Or: $product->shortDescription
 
-foreach ($response->getData()->getFields() as $field) {
+foreach ($product->getFields() as $field) {
 	if ($field->isArray()) {
-		echo "<br />" . $field->key .":";
+		echo "<br /><strong>" . $field->key .":</strong>";
 
 		foreach ($field->value as $arrayEntry) {
 			echo "<br />- " . $arrayEntry->value;
 		}
 	}
 	else {
-		echo "<br />" . $field->getKey() .": ". $field->value;
+		echo "<br /><strong>" . $field->getKey() .":</strong> ". $field->value;
 	}	
 }
 
+echo "<br /><strong>Profile Image:</strong><br /><br /><img style=\"width: 400px; height: 400px;\" src=\"" . $product->image->url ."\" />";
+
+// Find a field by name:
+echo "<br /><br />Looking for field 'Gender': ";
+var_dump($product->findField("Gender"));
+var_dump($product->gender); // __get magic
 ?>

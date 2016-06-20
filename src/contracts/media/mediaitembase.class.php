@@ -27,9 +27,9 @@ use Syndy\Api\Contracts;
 
 abstract class MediaItemBase extends Contracts\BaseContract {
 
-	private $id;
+	protected $id;
 
-	private $url;
+	protected $url;
 
 	public function __construct($rawData) {
 		$this->parse($rawData);

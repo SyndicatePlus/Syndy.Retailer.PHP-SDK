@@ -29,13 +29,13 @@ use Syndy\Api\Contracts;
 
 class ProductSummary extends Contracts\BaseContract {
 
-	private $name;
+	protected $name;
 
-	private $shortDescription;
+	protected $shortDescription;
 
-	private $brandSummary;
+	protected $brand;
 
-	private $image;
+	protected $image;
 
 	public function __construct($rawData) {
 		$this->parse($rawData);
@@ -46,7 +46,7 @@ class ProductSummary extends Contracts\BaseContract {
 
 		$this->name = $rawData->Name;
 		$this->shortDescription = $rawData->Description;
-		$this->brandSummary = new Contracts\Brand\BrandSummary($rawData->Brand);
+		$this->brand = new Contracts\Brand\BrandSummary($rawData->Brand);
 		$this->image = $rawData->Image != null ? new Contracts\Media\ImageItem($rawData->Image) : null;
 	}
 
@@ -59,7 +59,7 @@ class ProductSummary extends Contracts\BaseContract {
 	}
 
 	public function getBrand() {
-		return $this->brandSummary;
+		return $this->brand;
 	}
 
 	public function getImage() {
