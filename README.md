@@ -39,7 +39,7 @@ var_dump($response);
 [3]: https://github.com/SyndicatePlus/Syndy.Retailer.PHP-SDK/tree/master/examples
 
 #### Preferred Mode of Operation
-The preferred mode of operation for retailers or webshops who choose to use the Syndy Retailer API to get access to the latest product content within their assortment, is to request changed products on a periodic basis and then request the details for each changed product separately. A simplified version of a typical "refresh-product-data.php" cron job might then look as follows:
+The preferred mode of operation for retailers or webshops who choose to use the Syndy Retailer API to get access to the latest product content within their assortment, is to request changed products on a periodic basis and then request the details for each changed product separately. A simplified version of a typical "refresh-product-data.php" cron job might then be constructed as follows:
 
 ```php
 define('PUBLICKEY', 'Your public key here');
@@ -64,7 +64,7 @@ $assortmentProducts = $request->execute();
 // different pagination settings.
 foreach ($assortmentProducts as $product) {
 	// Create product request and execute.
-	$productRequest = $api->getProductRequest($product->getId(), CULTUREID);
+	$productRequest = $api->createGetProductRequest($product->getId(), CULTUREID);
 	$productDetails = $productRequest->execute();
 
 	// TODO: Do something with the $productDetails object, e.g. store in database

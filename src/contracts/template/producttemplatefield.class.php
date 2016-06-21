@@ -25,6 +25,7 @@ require_once dirname(__FILE__)."/../basecontract.class.php";
 require_once dirname(__FILE__)."/valuecontainers/flatvaluecontainer.class.php";
 require_once dirname(__FILE__)."/valuecontainers/arrayvaluecontainer.class.php";
 require_once dirname(__FILE__)."/valuecontainers/objectvaluecontainer.class.php";
+require_once dirname(__FILE__)."/valuecontainers/enumvaluecontainer.class.php";
 
 use Syndy\Api\Contracts;
 
@@ -59,7 +60,7 @@ class ProductTemplateField extends Contracts\BaseContract {
 			$this->data = new ObjectValueContainer($rawData->Data);
 		}
 		elseif ($this->type == "enum") {
-			$this->data = ValueContainer::createEnum($rawData->Data);
+			$this->data = new EnumValueContainer($rawData->Data);
 		}
 		else {
 			$this->data = new FlatValueContainer($rawData->Data);
