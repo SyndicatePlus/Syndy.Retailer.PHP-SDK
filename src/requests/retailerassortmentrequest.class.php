@@ -41,10 +41,12 @@ class RetailerAssortmentRequest extends SyndyBaseRequest {
 
 	private $fromDate = null;
 
-	public function __construct(Net\SyndyApiConnection &$connection, $fromDate) {
+	public function __construct(Net\SyndyApiConnection &$connection, $fromDate = null) {
 		parent::__construct($connection);
 
-		$this->setFromDate($fromDate);
+		if ($fromDate !== null) {
+			$this->setFromDate($fromDate);
+		}
 	}
 
 	public function setOffset($offset) {
