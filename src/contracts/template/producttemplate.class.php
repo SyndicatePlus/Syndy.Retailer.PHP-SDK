@@ -73,7 +73,7 @@ class ProductTemplate extends Contracts\BaseContract {
 		if ($allFields) {
 			$fields = $this->fields;
 			foreach ($this->children as $childTemplate) {
-				$fields += $childTemplate->getFields();
+				$fields = array_merge($fields, $childTemplate->getFields($allFields)); // Recursion
 			}
 			return $fields;
 		}

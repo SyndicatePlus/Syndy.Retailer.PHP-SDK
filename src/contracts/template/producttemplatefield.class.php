@@ -57,10 +57,10 @@ class ProductTemplateField extends Contracts\BaseContract {
 			$this->data = new ArrayValueContainer($rawData->Data);
 		}
 		elseif ($this->type == "object") {
-			$this->data = new ObjectValueContainer($rawData->Data);
+			$this->data = $rawData->Data->Value == null ? null : new ObjectValueContainer($rawData->Data);
 		}
 		elseif ($this->type == "enum") {
-			$this->data = new EnumValueContainer($rawData->Data);
+			$this->data = $rawData->Data->Value == null ? null : new EnumValueContainer($rawData->Data);
 		}
 		else {
 			$this->data = new FlatValueContainer($rawData->Data);

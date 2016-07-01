@@ -19,66 +19,95 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace Syndy\Api\Contracts\Template;
+namespace Syndy\Api\Interpreters;
 
-require_once dirname(__FILE__)."/../../basecontract.class.php";
-require_once dirname(__FILE__)."/../producttemplatefield.class.php";
+require_once dirname(__FILE__)."/baseinterpreter.class.php";
+require_once dirname(__FILE__)."/../contracts/template/producttemplatefield.class.php";
+require_once dirname(__FILE__)."/../exceptions/syndyapiexception.class.php";
 
 use Syndy\Api\Contracts;
+use Syndy\Api\Exceptions;
 
-class ObjectValueContainer extends Contracts\BaseContract implements \Iterator, \ArrayAccess {
+class NutrientsInterpreter extends BaseInterpreter implements \Iterator, \ArrayAccess {
 
-	protected $data = array();
+	protected $hasPortion;
 
-	public function __construct($rawData) {
-		parent::__construct($rawData);
+	public $portion = null;
+
+	private $data = array();
+
+	public function __construct(Contracts\Template\ProductTemplateField $field) {
+		parent::__construct($field);
 	}
 
-	protected function parse($rawData) {
-		$rawData = parent::parse($rawData);
+	protected function interpret() {
+		$portionField = $this->getSpecificFieldByType("boolean");
+		if ($portionField === null) {
+			throw new Exceptions\SyndyApiException("Cannot find portion boolean field. Are you sure this is a Nutrients field?");
+		}
+		$this->hasPortion = $portionField->value;
 
-		foreach ($rawData->Value as $childField) {
-			$this->data[] = new Contracts\Template\ProductTemplateField($childField);
+		if ($this->hasPortion) {
+			// Parse portion size & unit
+			$this->portion = new \stdClass();
+			$this->portion->size = $this->field->value->getChildFieldByType("int")->value;
+			$this->portion->uom = $this->field->value->getChildFieldByType("enum")->value;
 		}
 
-		return $rawData;
+		// Parse individual nutrient rows into $data array
+		$this->parseNutrientRows();
 	}
 
-	public function getChildFields() {
-		return $this->data;
-	}
+	private function parseNutrientRows() {
+		$array = $this->field->value->getChildFieldByType("array");
+		foreach ($array->value as $value) {
+			$value = $value->value;
 
-	public function getChildFieldByType($type, $index = 1) {
-		$counter = 1;
-		foreach ($this->data as $childField) {
-			if ($childField->type == $type && $counter++ == $index) {
-				return $childField;
+			$data = new \stdClass();
+			$data->displayName = $value->getChildFieldById("d3550eb8-7f67-4fe9-be6e-909035138820")->value;
+			$data->amounts = array();
+
+			$uom = $value->getChildFieldById("9c4d4359-3fb4-4d30-a152-eef1be68b638")->value;
+			$precision = $value->getChildFieldById("1390e08a-5545-4a64-baf8-1e75d1890ec7")->value;
+
+			$value1 = new \stdClass();
+			$value1->precision = $precision;
+			$value1->amount = $value->getChildFieldById("eebac603-d7f8-43bb-882b-4df8ba2e0ee5")->value;
+			$value1->gda = $value->getChildFieldById("af28a80e-89df-4468-a6d1-8f5a83305bb2")->value;
+			$value1->uom = $uom;
+			$data->amounts[] = $value1;
+
+			if ($this->hasPortion) {
+				$value2 = new \stdClass();
+				$value2->precision = $precision;
+				$value2->amount = $value->getChildFieldById("65d54ae7-6026-4552-b6d8-e10486325a0a")->value;
+				$value2->gda = $value->getChildFieldById("a7dbd6ca-c53f-425c-9d8c-5cfdb158a584")->value;
+				$value2->uom = $uom;
+				$data->amounts[] = $value2;
 			}
+
+			$this->data[] = $data;
 		}
-		return null;
 	}
 
-	public function getChildFieldById($id) {
-		foreach ($this->data as $childField) {
-			if ($childField->id == $id) {
-				return $childField;
-			}
-		}
-		return null;
+	public function hasPortion() {
+		return $this->hasPortion;
+	}
+
+	public function getPortion() {
+		return $this->portion;
+	}
+
+	public function getNutrientsCount() {
+		return count($this->data);
 	}
 
 	public function __get($field) {
-		foreach ($this->data as $childField) {
-			if ($childField->key == $field) {
-				return $childField;
-			}
+		if ($field == "count") {
+			return $this->getNutrientsCount();
 		}
-		
-		return parent::__get($field);
-	}
 
-	public function __toString() {
-		return "[ComplexType]";
+		return parent::__get($field);
 	}
 
 	/*///////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\

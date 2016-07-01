@@ -19,44 +19,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace Syndy\Api\Contracts\Template;
+namespace Syndy\Api\Interpreters;
 
-require_once dirname(__FILE__)."/../../basecontract.class.php";
+require_once dirname(__FILE__) . "/../contracts/template/producttemplatefield.class.php";
 
 use Syndy\Api\Contracts;
 
-class EnumValueContainer extends Contracts\BaseContract {
+abstract class BaseInterpreter {
 
-	protected $enumId;
+	protected $field;
 
-	protected $value;
+	public function __construct(Contracts\Template\ProductTemplateField $field) {
+		$this->field = $field;
 
-	protected $valueId;
-
-	public function __construct($rawData) {
-		parent::__construct($rawData);
+		$this->interpret();
 	}
 
-	protected function parse($rawData) {
-		$rawData = parent::parse($rawData);
+	protected abstract function interpret();
 
-		$this->enumId = $rawData->EnumId;
-		$this->value = $rawData->Value->Value;
-		$this->valueId = $rawData->Value != null ? $rawData->Value->Id;
-
-		return $rawData;
+	protected function getSpecificFieldByType($type, $index = 1) {
+		$counter = 1;
+		foreach ($this->field->value as $childField) {
+			if ($childField->type == $type && $counter++ == $index) {
+				return $childField;
+			}
+		}
+		return null;
 	}
 
-	public function getEnumId() {
-		return $this->enumId;
-	}
+	public function __get($field) {
+		if (!isset($this->$field)) {
+			return null;
+		}
 
-	public function getValue() {
-		return $this->value;
-	}
-
-	public function getValueId() {
-		return $this->valueId;
+		return $this->$field;
 	}
 }
 ?>

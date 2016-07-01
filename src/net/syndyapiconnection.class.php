@@ -118,7 +118,6 @@ class SyndyApiConnection
 		}
 
 		// TODO: Send rate limit info to credentials object for tracking
-
 		if ( $response === false )
 			return $response;
 
