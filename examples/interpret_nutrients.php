@@ -12,7 +12,7 @@ define('CULTUREID', 'nl');
 require_once "../src/syndyretailerapimanager.class.php";
 
 // We must include the interpreter separately.
-require_once "../src/interpreters/nutrientsinterpreter.class.php";
+require_once "../src/interpreters/food/nutrientsinterpreter.class.php";
 
 // Create a credentials object which holds the user's keys and access token
 // NOTE: it makes sense to persist credentials across executions of individual scripts.
@@ -39,7 +39,7 @@ echo "<br /><strong>Profile Image:</strong><br /><br /><img style=\"width: 200px
 $field = $product->findField("Nutrients");
 
 // Use the NutrientsInterpreter
-$nutrients = new Syndy\Api\Interpreters\NutrientsInterpreter($field);
+$nutrients = new Syndy\Api\Interpreters\Food\NutrientsInterpreter($field);
 
 // The following terms are handy to keep in mind:
 // uom 			= Unit of Measurement (e.g. mg, g, mL)

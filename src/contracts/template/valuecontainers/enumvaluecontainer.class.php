@@ -41,8 +41,8 @@ class EnumValueContainer extends Contracts\BaseContract {
 		$rawData = parent::parse($rawData);
 
 		$this->enumId = $rawData->EnumId;
-		$this->value = $rawData->Value->Value;
-		$this->valueId = $rawData->Value != null ? $rawData->Value->Id;
+		$this->value = $rawData->Value !== null ? $rawData->Value->Value : null;
+		$this->valueId = $rawData->Value !== null ? $rawData->Value->Id : null;
 
 		return $rawData;
 	}

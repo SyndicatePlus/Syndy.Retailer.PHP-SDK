@@ -19,16 +19,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace Syndy\Api\Interpreters;
+namespace Syndy\Api\Interpreters\Food;
 
-require_once dirname(__FILE__)."/baseinterpreter.class.php";
-require_once dirname(__FILE__)."/../contracts/template/producttemplatefield.class.php";
-require_once dirname(__FILE__)."/../exceptions/syndyapiexception.class.php";
+require_once dirname(__FILE__)."/../baseinterpreter.class.php";
+require_once dirname(__FILE__)."/../../contracts/template/producttemplatefield.class.php";
+require_once dirname(__FILE__)."/../../exceptions/syndyapiexception.class.php";
 
 use Syndy\Api\Contracts;
 use Syndy\Api\Exceptions;
+use Syndy\Api\Interpreters;
 
-class NutrientsInterpreter extends BaseInterpreter implements \Iterator, \ArrayAccess {
+class NutrientsInterpreter extends Interpreters\BaseInterpreter implements \Iterator, \ArrayAccess {
 
 	protected $hasPortion;
 
