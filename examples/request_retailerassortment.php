@@ -14,7 +14,7 @@ $api = new Syndy\Api\SyndyRetailerApiManager($credentials);
 
 // Create a request that fetches only that part of the assortment in which
 // changes have been made since yesterday.
-$request = $api->createRetailerAssortmentRequest(time() - 4592000);
+$request = $api->createRetailerAssortmentRequest(time() - 3600);
 // $request->setAmount(100);	// Set bigger page size
 // $request->setOffset(50);		// From what offset (0-based) to start fetching results
 $response = $request->execute();
