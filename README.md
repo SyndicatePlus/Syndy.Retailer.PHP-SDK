@@ -1,6 +1,6 @@
 ## Syndy Retailer API
 
-###### IMPORTANT NOTE: The PHP-SDK is still under construction. For examples on how to use the SyndyApiConnection class, have a look in the examples folder. Please note that the SyndyApiConnection class is a low-level utility and access to the API will take place through semantically more full-fledged helper classes.
+###### IMPORTANT NOTE: The PHP-SDK is still under construction. Various 
 
 #### Summary
 The Syndy Retailer API allows retailers to connect programmatically to their retailer assortment on the Syndy Platform. This is the Retailer API's native PHP Client SDK, and it replaces the deprecated [SyndicatePlusApi-PHP SDK][1].
