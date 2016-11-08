@@ -1,7 +1,5 @@
 ## Syndy Retailer API
 
-###### IMPORTANT NOTE: The PHP-SDK is still under construction. Various 
-
 #### Summary
 The Syndy Retailer API allows retailers to connect programmatically to their retailer assortment on the Syndy Platform. This is the Retailer API's native PHP Client SDK, and it replaces the deprecated [SyndicatePlusApi-PHP SDK][1].
 
@@ -77,3 +75,6 @@ foreach ($assortmentProducts as $product) {
 
 #### Contracts
 The SDK, where possible, attempts to parse the raw JSON into Contract classes so that additional utility becomes available to the consumer of the API. However, it is possible to override this behaviour by passing `true` as an argument to a request's execute() method.
+
+#### Known Issues
+* Because the authorization token can be rather long, issues have been encountered with external software cutting off part of the Authorization request header. If NewRelic cross application tracing is enabled, for example, this may happen. That particular case can be circumvented by setting the following configuration value: newrelic.cross_application_tracer.enabled = false
